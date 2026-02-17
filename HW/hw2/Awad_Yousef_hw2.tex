@@ -1,0 +1,132 @@
+\documentclass[12pt, letterpaper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{array}
+
+% Page Layout
+\geometry{margin=1in}
+
+% Code Listing Settings (Python Style)
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{pythonstyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=4,
+    language=Python
+}
+
+\lstset{style=pythonstyle}
+
+% Header Information
+\title{\textbf{Homework 2: Socket Programming}}
+\author{Yousef Alaa Awad}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+\section*{Part 1: Run TCP Programs}
+Below is execution screenshot, followed by the given TCP program codes.
+
+\subsection*{Execution Screenshot}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{screenshot_tcp.png}
+	\caption{Server\_TCP and Client\_TCP in operation.}
+\end{figure}
+
+\subsection*{Server\_TCP.py}
+\lstinputlisting[language=Python]{Server_TCP.py}
+
+\subsection*{Client\_TCP.py}
+\lstinputlisting[language=Python]{Client_TCP.py}
+
+\newpage
+
+\section*{Part 2: Developing UDP Programs}
+Using the TCP codes as references, the following UDP Client and Server programs were created.
+
+\subsection*{Server\_UDP.py}
+\lstinputlisting[language=Python]{Server_UDP.py}
+
+\subsection*{Client\_UDP.py}
+\lstinputlisting[language=Python]{Client_UDP.py}
+
+\subsection*{Execution Screenshot}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{screenshot_udp.png}
+	\caption{Server\_UDP and Client\_UDP in operation.}
+\end{figure}
+
+\newpage
+
+\section*{Part 3: Modify the TCP Server}
+The \texttt{Server\_TCP.py} was modified to create an always-on server.
+
+\subsection*{Modified Code}
+Example: \lstinputlisting[language=Python]{Server_TCP_AlwaysOn.py}
+
+\subsection*{Execution Screenshot}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{screenshot_AlwaysOn.png}
+	\caption{Modified Always-On TCP Server in operation.}
+\end{figure}
+
+\newpage
+
+\section*{Part 4: Questions}
+
+\begin{enumerate}
+	\item \textbf{(5 pts) The Server\_TCP code does not explicitly declare the client’s IP address and port in its initial setup. How does it send messages to the Client\_TCP?}
+
+	      The server sends messages back to the client using a dedicated connection socket object returned by the \texttt{socket.accept()} method.
+	      This \texttt{clientSocket} instance internally stores the state of the specific connection, including the client's IP and port. When the server calls \texttt{clientSocket.send()}, the underlying operating system uses this stored connection to route the message to the correct destination, therefore eliminating the need for the Python code to have to explicitly store the address in a variable (if not wanted).
+
+	\item \textbf{(5 pts) Is it possible to avoid using serverSocket.bind or clientSocket.bind in these programs? Explain your answer.}
+
+	      \begin{itemize}
+		      \item \textbf{For the Client: Yes.} \\
+		            In \texttt{Client\_TCP.py} and \texttt{Client\_UDP.py}, \texttt{bind()} is currently used to fix the source port to 12001. If this line is removed, the operating system will automatically assign an available port and use its local IP when the client calls \texttt{connect()} (TCP) or \texttt{sendto()} (UDP). The communication will still work correctly, however, due to the server determining the client's return address dynamically upon receiving the initial packet.
+
+		      \item \textbf{For the Server: No.} \\
+		            In the server programs, \texttt{bind()} is necessary. The server must listen on a specific, known port (12000 in the python files above) so that clients know exactly where to send their connection requests or packets. If \texttt{bind()} were removed, the operating system would then assign a random port number, and the clients (which are hardcoded to target port 12000) would be unable to connect to the server.
+	      \end{itemize}
+
+	\item \textbf{(15 pts) Summarize the differences between TCP and UDP programs.}
+
+	      There were 3 major differences that I found after writing the programs.
+        First was the with the socket types. TCP programs utilize \texttt{SOCK\_STREAM}, whereas the UDP programs employ \texttt{SOCK\_DGRAM}. 
+        Secondly, the connection setup is also different. TCP is connection-oriented, meaning the server has to use \texttt{listen()} and \texttt{accept()[0]} while the client simply calls \texttt{connect()}. UDP, on the other hand, is connectionless and therefore involves no initial handshake and avoids these connection-specific methods allowing for you to just spit out messages whenever.
+	      Thirdly, when sending data, TCP relies on \texttt{send()}, where the destination is implicit in the connected socket, and UDP uses \texttt{sendto(msg, addr)}, requiring the destination address to be explicitly included in every packet. Along those line, when receiving data, TCP uses \texttt{recv()} (returning only the data string), whereas UDP uses \texttt{recvfrom()}, and returns a tuple containing both the message and the client address.
+\end{enumerate}
+
+\end{document}
