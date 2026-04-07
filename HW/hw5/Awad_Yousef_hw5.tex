@@ -1,0 +1,227 @@
+\documentclass[12pt, letterpaper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{tikz}
+
+\usetikzlibrary{shapes, arrows, automata, positioning, decorations.pathreplacing}
+
+% Page Layout
+\geometry{margin=1in}
+
+% Header Information
+\title{\textbf{Homework 5}}
+\author{Yousef Alaa Awad}
+\date{\today}
+
+% Custom Formatting Commands
+\newcommand{\problem}[1]{\section*{Problem #1}}
+\newcommand{\question}[1]{\noindent\textbf{Question: }#1\par\vspace{0.5em}}
+\newcommand{\answer}{\noindent\textbf{Answer:}\par\vspace{1em}}
+
+\begin{document}
+
+\maketitle
+
+\problem{1}
+\question{Consider a datagram network using 8-bit host addresses. Suppose a router uses longest prefix matching and has the given forwarding table. For each of the four interfaces, give the associated range of destination host addresses and the number of addresses in the range.}
+
+\answer{
+	Using longest prefix matching on 8-bit addresses:
+
+	\begin{itemize}
+		\item \textbf{Interface 1 (Prefix 10):} Range is from \texttt{10000000} to \texttt{10111111}.
+		      In decimal, this is 128 through 191.
+		      \textbf{Number of addresses: 64.}
+
+		\item \textbf{Interface 2 (Prefix 111):} Range is from \texttt{11100000} to \texttt{11111111}.
+		      In decimal, this is 224 through 255.
+		      \textbf{Number of addresses: 32.}
+
+		\item \textbf{Interface 0 (Prefix 1):} This catches addresses starting with \texttt{1} that do not match the longer prefixes \texttt{10} or \texttt{111}. The range is \texttt{11000000} to \texttt{11011111}.
+		      In decimal, this is 192 through 223.
+		      \textbf{Number of addresses: 32.}
+
+		\item \textbf{Interface 3 (otherwise):} This catches all addresses starting with \texttt{0}. The range is \texttt{00000000} to \texttt{01111111}.
+		      In decimal, this is 0 through 127.
+		      \textbf{Number of addresses: 128.}
+	\end{itemize}
+}
+
+\pagebreak
+\problem{2}
+\question{Compute the shortest path from x, v, and u to all network nodes using Dijkstra's algorithm.}
+
+\answer{
+	\textbf{a. Shortest path from x:}
+	\begin{center}
+		\resizebox{\textwidth}{!}{
+			\begin{tabular}{|c|c|c|c|c|c|c|c|}
+				\hline
+				\textbf{Step} & \textbf{N'}       & \textbf{D(y),p(y)} & \textbf{D(z),p(z)} & \textbf{D(v),p(v)} & \textbf{D(w),p(w)} & \textbf{D(t),p(t)} & \textbf{D(u),p(u)} \\ \hline
+				0             & \{x\}             & 6,x                & 8,x                & 3,x                & 6,x                & $\infty$           & $\infty$           \\ \hline
+				1             & \{x,v\}           & 6,x                & 8,x                &                    & 6,x                & 7,v                & 6,v                \\ \hline
+				2             & \{x,v,y\}         &                    & 8,x                &                    & 6,x                & 7,v                & 6,v                \\ \hline
+				3             & \{x,v,y,w\}       &                    & 8,x                &                    &                    & 7,v                & 6,v                \\ \hline
+				4             & \{x,v,y,w,u\}     &                    & 8,x                &                    &                    & 7,v                &                    \\ \hline
+				5             & \{x,v,y,w,u,t\}   &                    & 8,x                &                    &                    &                    &                    \\ \hline
+				6             & \{x,v,y,w,u,t,z\} &                    &                    &                    &                    &                    &                    \\ \hline
+			\end{tabular}
+		}
+	\end{center}
+	Distances from x: (y:6, z:8, v:3, w:6, t:7, u:6)
+
+	\vspace{1em}
+	\textbf{b. Shortest path from v:}
+	\begin{center}
+		\resizebox{\textwidth}{!}{
+			\begin{tabular}{|c|c|c|c|c|c|c|c|}
+				\hline
+				\textbf{Step} & \textbf{N'}       & \textbf{D(x),p(x)} & \textbf{D(y),p(y)} & \textbf{D(z),p(z)} & \textbf{D(w),p(w)} & \textbf{D(t),p(t)} & \textbf{D(u),p(u)} \\ \hline
+				0             & \{v\}             & 3,v                & 8,v                & $\infty$           & 4,v                & 4,v                & 3,v                \\ \hline
+				1             & \{v,x\}           &                    & 8,v                & 11,x               & 4,v                & 4,v                & 3,v                \\ \hline
+				2             & \{v,x,u\}         &                    & 8,v                & 11,x               & 4,v                & 4,v                &                    \\ \hline
+				3             & \{v,x,u,w\}       &                    & 8,v                & 11,x               &                    & 4,v                &                    \\ \hline
+				4             & \{v,x,u,w,t\}     &                    & 8,v                & 11,x               &                    &                    &                    \\ \hline
+				5             & \{v,x,u,w,t,y\}   &                    &                    & 11,x               &                    &                    &                    \\ \hline
+				6             & \{v,x,u,w,t,y,z\} &                    &                    &                    &                    &                    &                    \\ \hline
+			\end{tabular}
+		}
+	\end{center}
+	Distances from v: (x:3, y:8, z:11, w:4, t:4, u:3)
+
+	\vspace{1em}
+	\textbf{c. Shortest path from u:}
+	\begin{center}
+		\resizebox{\textwidth}{!}{
+			\begin{tabular}{|c|c|c|c|c|c|c|c|}
+				\hline
+				\textbf{Step} & \textbf{N'}       & \textbf{D(x),p(x)} & \textbf{D(y),p(y)} & \textbf{D(z),p(z)} & \textbf{D(v),p(v)} & \textbf{D(w),p(w)} & \textbf{D(t),p(t)} \\ \hline
+				0             & \{u\}             & $\infty$           & $\infty$           & $\infty$           & 3,u                & 3,u                & 2,u                \\ \hline
+				1             & \{u,t\}           & $\infty$           & 9,t                & $\infty$           & 3,u                & 3,u                &                    \\ \hline
+				2             & \{u,t,v\}         & 6,v                & 9,t                & $\infty$           &                    & 3,u                &                    \\ \hline
+				3             & \{u,t,v,w\}       & 6,v                & 9,t                & $\infty$           &                    &                    &                    \\ \hline
+				4             & \{u,t,v,w,x\}     &                    & 9,t                & 14,x               &                    &                    &                    \\ \hline
+				5             & \{u,t,v,w,x,y\}   &                    &                    & 14,x               &                    &                    &                    \\ \hline
+				6             & \{u,t,v,w,x,y,z\} &                    &                    &                    &                    &                    &                    \\ \hline
+			\end{tabular}
+		}
+	\end{center}
+	Distances from u: (x:6, y:9, z:14, v:3, w:3, t:2)
+}
+
+\pagebreak
+\problem{3}
+\question{Consider the distance-vector algorithm and show the distance table entries at node z for the first 4 iterations.}
+
+\answer{
+	Let $D_z(n)$ be the current estimated distance from $z$ to node $n$. Initially, $z$ only knows the costs to its direct neighbors $v$ and $x$.
+
+	\begin{itemize}
+		\item \textbf{Initialization (Iter 0):}
+		      $D_z(x) = 2$, $D_z(v) = 6$, $D_z(y) = \infty$, $D_z(u) = \infty$.
+
+		\item \textbf{Iteration 1:} $z$ receives distance vectors from $x$ and $v$.
+		      $x$ announces $D_x(v)=3$ and $D_x(y)=3$. $v$ announces $D_v(x)=3$ and $D_v(u)=1$.
+		      \begin{itemize}
+			      \item $D_z(v) = \min(6, c(z,x)+D_x(v)) = \min(6, 2+3) = 5$ (via $x$).
+			      \item $D_z(y) = \min(\infty, c(z,x)+D_x(y)) = \min(\infty, 2+3) = 5$ (via $x$).
+			      \item $D_z(u) = \min(\infty, c(z,v)+D_v(u)) = \min(\infty, 6+1) = 7$ (via $v$).
+		      \end{itemize}
+
+		\item \textbf{Iteration 2:} $x$ receives updates and announces its new cost to $u$: $D_x(u) = 4$ (via $v$).
+		      \begin{itemize}
+			      \item $D_z(u) = \min(7, c(z,x)+D_x(u)) = \min(7, 2+4) = 6$ (via $x$).
+			      \item Costs to $v$ and $y$ remain $5$.
+		      \end{itemize}
+
+		\item \textbf{Iteration 3:} The algorithm stabilizes as no shorter paths are found by $x$ or $v$.
+		      $D_z(x)=2, D_z(v)=5, D_z(y)=5, D_z(u)=6$.
+
+		\item \textbf{Iteration 4:} No changes. The table remains stable.
+	\end{itemize}
+}
+
+\pagebreak
+\problem{4}
+\question{Consider a subnet with prefix 128.119.40.128/26. Give an example of one IP address. Suppose an ISP owns 128.119.40.64/26 and wants to create four equal subnets. What are the prefixes?}
+
+\answer{
+	\textbf{Example IP:} The prefix \texttt{128.119.40.128/26} covers addresses from \texttt{128.119.40.128} to \texttt{128.119.40.191}. An example IP address that can be assigned to a host is \textbf{128.119.40.130}.
+
+	\vspace{1em}
+	\textbf{Four Subnets:} The ISP block \texttt{128.119.40.64/26} has 64 addresses. To divide this into four equal subnets, we need to borrow $\log_2(4) = 2$ bits. The new subnet mask will be $/28$ ($26 + 2$). Each subnet will contain 16 addresses. The four prefixes are:
+	\begin{enumerate}
+		\item \textbf{128.119.40.64/28} (Ranges 64 - 79)
+		\item \textbf{128.119.40.80/28} (Ranges 80 - 95)
+		\item \textbf{128.119.40.96/28} (Ranges 96 - 111)
+		\item \textbf{128.119.40.112/28} (Ranges 112 - 127)
+	\end{enumerate}
+}
+
+\pagebreak
+\problem{5}
+\question{Assign addresses to all interfaces in the home network (192.168.1/24). Provide the six corresponding entries in the NAT translation table for two ongoing TCP connections per host.}
+
+\answer{
+	\textbf{a. Address Assignments:}
+	Mapping the local addresses from the diagram to the \texttt{192.168.1.0/24} block:
+	\begin{itemize}
+		\item \textbf{Router LAN Interface:} 192.168.1.4
+		\item \textbf{Host 1:} 192.168.1.1
+		\item \textbf{Host 2:} 192.168.1.2
+		\item \textbf{Host 3:} 192.168.1.3
+	\end{itemize}
+
+	\vspace{1em}
+	\textbf{b. NAT Translation Table Entries:}
+	Assuming arbitrary sequential port numbers are assigned by the NAT router on the WAN side starting at 5001, and arbitrary source ports generated by the hosts on the LAN side starting at 3345.
+
+	\begin{center}
+		\begin{tabular}{|c|c|}
+			\hline
+			\textbf{WAN side}   & \textbf{LAN side} \\ \hline
+			24.34.112.235, 5001 & 192.168.1.1, 3345 \\ \hline
+			24.34.112.235, 5002 & 192.168.1.1, 3346 \\ \hline
+			24.34.112.235, 5003 & 192.168.1.2, 3345 \\ \hline
+			24.34.112.235, 5004 & 192.168.1.2, 3346 \\ \hline
+			24.34.112.235, 5005 & 192.168.1.3, 3345 \\ \hline
+			24.34.112.235, 5006 & 192.168.1.3, 3346 \\ \hline
+		\end{tabular}
+	\end{center}
+}
+
+\pagebreak
+\problem{6}
+\question{Will the count-to-infinity problem occur if we decrease the cost of a link? How about if we connect two nodes which do not have a link?}
+
+\answer{
+	\textbf{Decreasing the cost of a link:} \textbf{No.} The count-to-infinity problem occurs due to routing loops when bad news (a link failure or cost increase) propagates slowly through the network. Distance vector algorithms handle good news (cost decreases) very quickly, as nodes will immediately adopt the new, shorter path and advertise it to their neighbors.
+
+	\vspace{1em}
+	\textbf{Connecting two nodes without a link:} \textbf{No.} Connecting two nodes that previously did not have a link is mathematically equivalent to decreasing the link cost from infinity ($\infty$) to a finite value. Therefore, this is also treated as "good news" and will propagate rapidly without causing the count-to-infinity problem.
+}
+
+\pagebreak
+\problem{7}
+\question{Identify which routing protocol (OSPF, RIP, eBGP, or iBGP) routers 3c, 3a, 1c, and 1d use to learn about prefix $x$.}
+
+\answer{
+	Prefix $x$ originates in AS4.
+	\begin{itemize}
+		\item \textbf{a. Router 3c} learns about prefix $x$ from \textbf{eBGP}. It receives the advertisement directly from its external gateway peer (4c) in a different Autonomous System.
+		\item \textbf{b. Router 3a} learns about prefix $x$ from \textbf{iBGP}. It receives the route advertisement from router 3c, which is inside the same Autonomous System.
+		\item \textbf{c. Router 1c} learns about prefix $x$ from \textbf{eBGP}. It receives the advertisement over the inter-AS link from gateway router 3a.
+		\item \textbf{d. Router 1d} learns about prefix $x$ from \textbf{iBGP}. It receives the route from router 1c, which is inside the same Autonomous System.
+	\end{itemize}
+}
+
+\end{document}
