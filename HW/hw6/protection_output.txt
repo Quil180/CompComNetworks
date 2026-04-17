@@ -1,0 +1,54 @@
+======================================================================
+  TASK 2-1: CRC-8 and SEC-DED Encoding
+======================================================================
+
+  Input value: 0xFA7816EB87CC0911
+  Input (binary): 1111101001111000000101101110101110000111110011000000100100010001
+
+  --- CRC-8 (Polynomial 0x107: x^8 + x^2 + x + 1) ---
+  CRC-8 value:    0x5B (binary: 01011011)
+  Encoded data:   0xFA7816EB87CC09115B
+  Encoded (bin):  111110100111100000010110111010111000011111001100000010010001000101011011
+  Verification:   OK (remainder = 0)
+
+  --- SEC-DED (Hamming + overall parity) ---
+  Total bits:     72 (64 data + 8 parity)
+  Encoded value:  0x17D3605B570F981211
+  Encoded (bin):  000101111101001101100000010110110101011100001111100110000001001000010001
+  Verification:   OK (no error detected)
+
+
+======================================================================
+  TASK 2-2: Error Detection Evaluation (1,000,000 trials each)
+======================================================================
+
+  Single-bit error:
+    CRC-8 detection rate:   100.0000%  (1000000/1000000)
+    SEC-DED detection rate:  100.0000%  (1000000/1000000)
+
+  Two random-bit errors:
+    CRC-8 detection rate:   100.0000%  (1000000/1000000)
+    SEC-DED detection rate:  100.0000%  (1000000/1000000)
+
+  Three random-bit errors:
+    CRC-8 detection rate:   100.0000%  (1000000/1000000)
+    SEC-DED detection rate:  100.0000%  (1000000/1000000)
+
+  8-bit burst error:
+    CRC-8 detection rate:   100.0000%  (1000000/1000000)
+    SEC-DED detection rate:  97.5716%  (975716/1000000)
+
+  16-bit burst error:
+    CRC-8 detection rate:   99.6021%  (996021/1000000)
+    SEC-DED detection rate:  98.5968%  (985968/1000000)
+
+
+  ------------------------------------------------------------------
+  Error Type                      CRC Rate (%)   SEC-DED Rate (%)
+  ------------------------------------------------------------------
+  Single-bit error                   100.0000%          100.0000%
+  Two random-bit errors              100.0000%          100.0000%
+  Three random-bit errors            100.0000%          100.0000%
+  8-bit burst error                  100.0000%           97.5716%
+  16-bit burst error                  99.6021%           98.5968%
+  ------------------------------------------------------------------
